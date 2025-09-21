@@ -1,0 +1,52 @@
+# from repo root
+mkdir -p .github/workflows
+cat > .github/workflows/ci.yml <<'YAML'
+name: CI - unit + integration
+
+on:
+  push:
+    branches: [ main, 'branch-*', 'release/*', 'hotfix/*' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  unit-tests:
+    name: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run unit tests (simulated)
+        run: |
+          echo "=== UNIT TESTS ==="
+          # simulate unit tests (replace with your real tests)
+          echo "1 test passed" > unit-report.txt
+      - name: Upload unit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-report
+          path: unit-report.txt
+
+  integration-tests:
+    name: integration-tests
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run integration tests (simulated)
+        run: |
+          echo "=== INTEGRATION TESTS ==="
+          # simulate integration tests
+          echo "integration OK" > integration-report.txt
+      - name: Upload integration artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-report
+          path: integration-report.txt
+YAML
+
+# commit + push (create a branch so you can open PR)
+git checkout -b ci-setup
+git add .github/workflows/ci.yml
+git commit -m "Add CI workflow (unit + integration)"
+git push -u origin ci-setup
+# then open a PR on GitHub: Merge ci-setup -> main (use GitHub UI)
